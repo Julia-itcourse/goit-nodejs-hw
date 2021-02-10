@@ -117,9 +117,9 @@ class ContactsController {
 
   validateUpdateContact(req, res, next) {
     const validationRules = Joi.object({
-      name: Joi.string().required(),
-      email: Joi.string().required(),
-      phone: Joi.string().required(),
+      name: Joi.string(),
+      email: Joi.string(),
+      phone: Joi.string(),
     }).min(1)
 
     const validationResult = validationRules.validate(req.body)
