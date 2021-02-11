@@ -1,3 +1,4 @@
+const Joi = require("joi")
 const {
   Types: { ObjectId },
 } = require("mongoose")
@@ -12,15 +13,15 @@ async function listContacts(req, res) {
 //find contact by id
 
 async function getContactById(req, res) {
-    const {
-        params: { id },
-      } = req
+  const {
+    params: { id },
+  } = req
 
-      const contact = await Contact.findById(id);
-if(!contact){
-    return res.status(400).send('Contact with this ID was not found')
-}
-      res.json(contact)
+  const contact = await Contact.findById(id)
+  if (!contact) {
+    return res.status(400).send("Contact with this ID was not found")
+  }
+  res.json(contact)
 }
 
 //add contact
@@ -35,17 +36,17 @@ async function addContact(req, res) {
 }
 //delete contact
 
-async function removeContact(req, res){
-    const {
-        params: { id },
-      } = req
+async function removeContact(req, res) {
+  const {
+    params: { id },
+  } = req
 
-    const removedContact = await Contact.findByIdAndDelete(id);
+  const removedContact = await Contact.findByIdAndDelete(id)
 
-    if(!removedContact){
-        return res.status(400).send('Contact was not found');
-    }
-    res.json(removedContact)
+  if (!removedContact) {
+    return res.status(400).send("Contact was not found")
+  }
+  res.json(removedContact)
 }
 
 //update contact
@@ -54,12 +55,9 @@ async function updateContact(req, res) {
     params: { id },
   } = req
 
-  const updatedContact = await Contact.findByIdAndUpdate(
-    id, req.body,
-    {
-      new: true,
-    }
-  )
+  const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
+    new: true,
+  })
 
   if (!updatedContact) {
     return res.status(400).send("Contact was not found")
@@ -69,54 +67,55 @@ async function updateContact(req, res) {
 
 //Middleware
 
-function validateId(req, res, next){
-    const {
-        params: { id },
-      } = req
-    
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).send("This id is not valid")
-      }
+function validateId(req, res, next) {
+  const {
+    params: { id },
+  } = req
 
-      next()
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).send("This id is not valid")
+  }
 
-
-
-
+  next()
 }
 
 //*validation methods with JOI from hw 2
-// validateAddContact(req, res, next) {
-//     const validationRules = Joi.object({
-//       name: Joi.string().required(),
-//       email: Joi.string().required(),
-//       phone: Joi.string().required(),
-//     })
+function validateAddContact(req, res, next) {
+  const validationRules = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().required(),
+    phone: Joi.string().required(),
+    subscription: Joi.string().required(),
+    password: Joi.string().required(),
+  })
 
-//     const validationResult = validationRules.validate(req.body)
+  const validationResult = validationRules.validate(req.body)
+  console.log(req.body)
+  if (validationResult.error) {
+    return res.status(400).send(validationResult.error)
+  }
 
-//     if (validationResult.error) {
-//       return res.status(400).send({ message: "missing required name field" })
-//     }
+  next()
+}
 
-//     next()
-//   }
+function validateUpdateContact(req, res, next) {
+  const validationRules = Joi.object({
+    name: Joi.string(),
+    email: Joi.string(),
+    phone: Joi.string(),
+    subscription: Joi.string(),
+    password: Joi.string(),
+  }).min(1)
 
-//   validateUpdateContact(req, res, next) {
-//     const validationRules = Joi.object({
-//       name: Joi.string(),
-//       email: Joi.string(),
-//       phone: Joi.string(),
-//     }).min(1)
+  const validationResult = validationRules.validate(req.body)
 
-//     const validationResult = validationRules.validate(req.body)
+  if (validationResult.error) {
+    return res.status(400).send({ message: "missing fields" })
+    //   return res.status(400).send(validationResult.error)
+  }
 
-//     if (validationResult.error) {
-//       return res.status(400).send({ message: "missing fields" })
-//     }
-
-//     next()
-//   }
+  next()
+}
 
 module.exports = {
   listContacts,
@@ -125,5 +124,7 @@ module.exports = {
   removeContact,
   getContactById,
 
-  validateId
+  validateId,
+  validateAddContact,
+  validateUpdateContact,
 }

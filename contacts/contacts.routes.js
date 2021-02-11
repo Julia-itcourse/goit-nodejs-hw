@@ -5,22 +5,24 @@ const router = Router();
 
 router.get('/', ContactsController.listContacts);
 router.get(
-  '/:contactId',
+  '/:id',
   ContactsController.validateId,
   ContactsController.getContactById,
 );
 router.post(
   '/',
+  ContactsController.validateAddContact,
   ContactsController.addContact,
 );
 router.delete(
-  '/:contactId',
+  '/:id',
   ContactsController.validateId,
   ContactsController.removeContact,
 );
 router.patch(
-  '/:contactId',
+  '/:id',
   ContactsController.validateId,
+  ContactsController.validateUpdateContact,
   ContactsController.updateContact,
 );
 
