@@ -10,8 +10,10 @@ const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const cors = require("cors");
 const morgan = require('morgan')
+const bcrypt = require('bcryptjs')
 const contactsRouter = require('./contacts/contacts.routes')
 
+const userRouter = require('./users/users.routes')
 
 dotenv.config()
 
