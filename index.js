@@ -41,7 +41,8 @@ function connectMiddlewares(app){
 }
 
 function declareRoutes(app){
-    app.use('/api/contacts', contactsRouter)
+    app.use('/api/contacts', contactsRouter);
+    app.use('', userRouter);
 }
 
 
