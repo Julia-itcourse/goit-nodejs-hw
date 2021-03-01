@@ -36,17 +36,20 @@ async function registerUser(req, res) {
 
     const avatarName = Date.now()
     Avatar.builder(
-      Avatar.Image.roundedRectMask(
-        Avatar.Image.compose(
-          Avatar.Image.randomFillStyle(),
-          Avatar.Image.shadow(Avatar.Image.margin(Avatar.Image.cat(), 8), {
-            blur: 5,
-            offsetX: 2.5,
-            offsetY: -2.5,
-            color: "rgba(0,0,0,0.7)",
-          })
+      Avatar.Image.margin(
+        Avatar.Image.roundedRectMask(
+          Avatar.Image.compose(
+            Avatar.Image.randomFillStyle(),
+            Avatar.Image.shadow(Avatar.Image.margin(Avatar.Image.cat(), 8), {
+              blur: 5,
+              offsetX: 2.5,
+              offsetY: -2.5,
+              color: "rgba(0,0,0,0.75)",
+            })
+          ),
+          32
         ),
-        28
+        8
       ),
       128,
       128
@@ -69,12 +72,18 @@ async function registerUser(req, res) {
       password: hashedPassword,
     })
 
-    const { email, subscription, avatarURL } = user;
+    const { email, subscription, avatarURL } = user
 
     res
       .status(201)
       .send("User created")
-      .json({ user: { email: email, subscription: subscription, avatarURL: avatarURL, } })
+      .json({
+        user: {
+          email: email,
+          subscription: subscription,
+          avatarURL: avatarURL,
+        },
+      })
   } catch (error) {
     res.status(400).send(error)
   }
@@ -187,22 +196,22 @@ async function getCurrentUser(req, res) {
 
 async function updateAvatar(req, res) {
   try {
-    const { _id } = req.user;
-    const { filename } = req.file;
+    const { _id } = req.user
+    const { filename } = req.file
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       { avatarURL: `http://localhost:3000/images/${filename}` },
       {
         new: true,
-      },
-    );
+      }
+    )
 
-    if (!updatedUser) res.status(400).send('User is not found');
+    if (!updatedUser) res.status(400).send("User is not found")
     res.json({
       avatarURL: updatedUser.avatarURL,
-    });
+    })
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send(error)
   }
 }
 

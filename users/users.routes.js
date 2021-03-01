@@ -68,7 +68,7 @@ router.patch(
     userController.authorizeUser,
     upload.single('avatar'),
     minifyAvatar,
-    userControllers.updateAvatar,
+    userController.updateAvatar,
   );
 
 module.exports = router;
