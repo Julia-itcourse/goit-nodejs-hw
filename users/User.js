@@ -23,6 +23,7 @@ const UserSchema = new Schema({
     },
    
     password: String,
+    avatarURL: String,
     
 
     subscription:{

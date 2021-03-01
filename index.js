@@ -6,18 +6,31 @@
 //5.listen on port
 
 const express = require('express')
+const multer = require('multer')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const cors = require("cors");
 const morgan = require('morgan')
 const bcrypt = require('bcryptjs')
-const contactsRouter = require('./contacts/contacts.routes')
 
+const contactsRouter = require('./contacts/contacts.routes')
 const userRouter = require('./users/users.routes')
 
 dotenv.config()
 
 const PORT = process.env.PORT || 3000
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/images');
+    },
+    filename: function (req, file, cb) {
+      const { ext } = path.parse(file.originalname);
+      cb(null, `${Date.now()}${ext}`);
+    },
+  });
+  
+  const upload = multer({ storage });
 
 start();
 
@@ -43,6 +56,9 @@ function connectMiddlewares(app){
 function declareRoutes(app){
     app.use('/api/contacts', contactsRouter);
     app.use('', userRouter);
+    app.post('/images', upload.single('avatar'), (req, res) => {
+        res.send({ file: req.file, ...req.body });
+      });
 }
 
 
