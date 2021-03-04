@@ -51,6 +51,7 @@ function connectMiddlewares(app){
     app.use(express.json())
     app.use(cors({ origin: '*' }))
     app.use(morgan('dev'));
+    app.use('/images', express.static('public/images'));
 }
 
 function declareRoutes(app){
